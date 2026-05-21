@@ -1,0 +1,124 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: data-backstage-template
+  title: 'Plantilla Data Backstage'
+  description: 'Scaffold a new data-related component with README and TechDocs setup.'
+  tags:
+    - backstage
+    - data
+    - template
+    - recommended
+spec:
+  owner: user:luis-sagx
+  type: service
+  parameters:
+    - title: 'Complete the form to create a new Data component'
+      ui:ObjectFieldTemplate: TwoColumn
+      required:
+        - name
+        - description
+        - system
+      properties:
+        name:
+          type: string
+          title: Project Name
+          description: The name of the project (kebab-case recommended)
+          ui:autofocus: true
+          ui:field: ValidateKebabCase
+        description:
+          title: Description
+          type: string
+          description: A short description for the component
+        owner:
+          title: Owner
+          type: string
+          description: The group or team responsible for the component
+          ui:field: MyGroupsPicker
+        system:
+          title: System
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind: System
+        componentType:
+          title: Tipo de componente
+          type: string
+          enum:
+            - service
+            - library
+            - website
+          default: service
+
+    - title: 'Choose a destination'
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository URL
+          type: string
+          description: The URL of the repository to create (git remote)
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedOwners:
+              - luis-sagx
+            allowedHosts:
+              - github.com
+
+  steps:
+    - id: fetch-base
+      name: Fetch template skeleton
+      action: fetch:template
+      input:
+        url: ./skeleton
+        copyWithoutTemplating:
+          - .github/workflows/*
+        values:
+          name: ${{ parameters.name }}
+          owner: ${{ parameters.owner }}
+          description: ${{ parameters.description }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+          repoUrl: ${{ parameters.repoUrl }}
+          system: ${{ parameters.system }}
+
+    - id: create_readme
+      name: Create README
+      action: file:write
+      input:
+        target: README.md
+        content: |
+          # ${{ parameters.name }}
+
+          ${{ parameters.description }}
+
+          This component was created using the Data Backstage template.
+
+    - id: create_catalog_info
+      name: Create catalog-info
+      action: file:write
+      input:
+        target: catalog-info.yaml
+        content: |
+          apiVersion: backstage.io/v1alpha1
+          kind: Component
+          metadata:
+            name: ${{ parameters.name }}
+            description: ${{ parameters.description }}
+            annotations:
+              backstage.io/techdocs-ref: dir:docs
+          spec:
+            type: ${{ parameters.componentType }}
+            lifecycle: experimental
+            owner: ${{ parameters.owner }}
+
+    - id: finish
+      name: Done
+      action: scaffolder:default
+      input:
+        message: 'Template created files (README.md, catalog-info.yaml, docs/). Review and push the repo manually or add a publish step when secrets are available.'
+
+# NOTE: Publishing to GitHub or registering the entity in the catalog is intentionally omitted
+# so you can upload this `template.yaml` to a public raw URL and register it in Backstage
+# without requiring secrets. If you want automatic publish/register, I can re-add those
+# steps and document how to configure secrets in your Backstage instance.
