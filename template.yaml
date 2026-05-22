@@ -82,17 +82,19 @@ spec:
           system: ${{ parameters.system }}
     - id: publish
       name: Publish repository to GitHub
-      action: github:publish
+      action: publish:github
       input:
-        # repo owner and name parsed from the repoUrl parameter
-        owner: ${{ parameters.repoUrl | parseRepoUrl | json('owner') }}
-        repo: ${{ parameters.repoUrl | parseRepoUrl | json('repo') }}
+        repoUrl: ${{ parameters.repoUrl }}
         description: ${{ parameters.description }}
         visibility: public
-        # directory to publish; fetch:template writes files to the action workspace
-        directory: ${{ steps.fetch-base.output.path }}
-        # Use a GitHub token available to the backend. Set GITHUB_TOKEN in the backend env
-        token: ${{ secrets.GITHUB_TOKEN }}
+        defaultBranch: 'main'
+
+    - id: register
+      name: Register component in catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
 
 # NOTE: Publishing to GitHub or registering the entity in the catalog is intentionally omitted
 # so you can upload this `template.yaml` to a public raw URL and register it in Backstage
