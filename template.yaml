@@ -80,42 +80,17 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           repoUrl: ${{ parameters.repoUrl }}
           system: ${{ parameters.system }}
-
-    - id: create_readme
-      name: Create README
-      action: file:write
-      input:
-        target: README.md
-        content: |
-          # ${{ parameters.name }}
-
-          ${{ parameters.description }}
-
-          This component was created using the Data Backstage template.
-
-    - id: create_catalog_info
-      name: Create catalog-info
-      action: file:write
-      input:
-        target: catalog-info.yaml
-        content: |
-          apiVersion: backstage.io/v1alpha1
-          kind: Component
-          metadata:
-            name: ${{ parameters.name }}
-            description: ${{ parameters.description }}
-            annotations:
-              backstage.io/techdocs-ref: dir:docs
-          spec:
-            type: ${{ parameters.componentType }}
-            lifecycle: experimental
-            owner: ${{ parameters.owner }}
-
     - id: finish
       name: Done
       action: scaffolder:default
       input:
-        message: 'Template created files (README.md, catalog-info.yaml, docs/). Review and push the repo manually or add a publish step when secrets are available.'
+        summaryMessage: |
+          ✅ Template skeleton fetched and prepared.
+
+          Next steps:
+          1. Review the generated files in the created workspace.
+          2. Commit and push the repository to your Git host.
+          3. Backstage will discover the new component via the GitHub provider.
 
 # NOTE: Publishing to GitHub or registering the entity in the catalog is intentionally omitted
 # so you can upload this `template.yaml` to a public raw URL and register it in Backstage
