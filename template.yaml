@@ -80,9 +80,19 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           repoUrl: ${{ parameters.repoUrl }}
           system: ${{ parameters.system }}
-    # No finish action — the fetch:template step produces the output in the
-    # temporary working directory. Commit/push should be done manually or via
-    # an authenticated publish step if you add it later.
+    - id: publish
+      name: Publish repository to GitHub
+      action: github:publish
+      input:
+        # repo owner and name parsed from the repoUrl parameter
+        owner: ${{ parameters.repoUrl | parseRepoUrl | json('owner') }}
+        repo: ${{ parameters.repoUrl | parseRepoUrl | json('repo') }}
+        description: ${{ parameters.description }}
+        visibility: public
+        # directory to publish; fetch:template writes files to the action workspace
+        directory: ${{ steps.fetch-base.output.path }}
+        # Use a GitHub token available to the backend. Set GITHUB_TOKEN in the backend env
+        token: ${{ secrets.GITHUB_TOKEN }}
 
 # NOTE: Publishing to GitHub or registering the entity in the catalog is intentionally omitted
 # so you can upload this `template.yaml` to a public raw URL and register it in Backstage
