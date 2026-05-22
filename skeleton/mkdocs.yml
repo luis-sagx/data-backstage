@@ -1,6 +1,6 @@
 site_name: ${{ values.name }}
 nav:
-  - Home: docs/index.md
-  - Usage: docs/usage.md
+  - Home: index.md
+  - Usage: usage.md
 plugins:
   - techdocs-core

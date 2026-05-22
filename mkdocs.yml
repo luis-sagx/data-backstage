@@ -1,6 +1,7 @@
 site_name: mi-api
 nav:
-  - Overview: docs/overview.md
-  - Usage: docs/usage.md
+  - Home: index.md
+  - Overview: overview.md
+  - Usage: usage.md
 plugins:
   - techdocs-core
