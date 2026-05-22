@@ -10,3 +10,32 @@ spec:
   type: service
   lifecycle: production
   owner: user:guest
+  system: examples
+  dependsOn:
+    - component:default/example-website
+  consumesApis:
+    - example-grpc-api
+  providesApis:
+    - mi-api-public-api
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: mi-api-public-api
+spec:
+  type: openapi
+  lifecycle: production
+  owner: user:guest
+  system: examples
+  definition: |
+    openapi: 3.0.0
+    info:
+      title: mi-api public API
+      version: 1.0.0
+    paths:
+      /health:
+        get:
+          responses:
+            '200':
+              description: OK
