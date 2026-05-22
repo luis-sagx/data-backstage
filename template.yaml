@@ -14,7 +14,6 @@ spec:
   type: service
   parameters:
     - title: 'Complete the form to create a new Data component'
-      ui:ObjectFieldTemplate: TwoColumn
       required:
         - name
         - description
