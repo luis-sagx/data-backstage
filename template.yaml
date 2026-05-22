@@ -80,6 +80,7 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           repoUrl: ${{ parameters.repoUrl }}
           system: ${{ parameters.system }}
+          componentType: ${{ parameters.componentType }}
     - id: publish
       name: Publish repository to GitHub
       action: publish:github
