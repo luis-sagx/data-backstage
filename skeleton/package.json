@@ -1,5 +1,5 @@
 {
-  "name": "${{ values.name }}",
+  "name": "data-backstage-skeleton",
   "version": "0.1.0",
   "description": "${{ values.description }}",
   "main": "index.js",
