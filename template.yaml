@@ -80,17 +80,9 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           repoUrl: ${{ parameters.repoUrl }}
           system: ${{ parameters.system }}
-    - id: finish
-      name: Done
-      action: scaffolder:default
-      input:
-        summaryMessage: |
-          ✅ Template skeleton fetched and prepared.
-
-          Next steps:
-          1. Review the generated files in the created workspace.
-          2. Commit and push the repository to your Git host.
-          3. Backstage will discover the new component via the GitHub provider.
+    # No finish action — the fetch:template step produces the output in the
+    # temporary working directory. Commit/push should be done manually or via
+    # an authenticated publish step if you add it later.
 
 # NOTE: Publishing to GitHub or registering the entity in the catalog is intentionally omitted
 # so you can upload this `template.yaml` to a public raw URL and register it in Backstage
